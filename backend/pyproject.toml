@@ -6,7 +6,7 @@ authors = ["Ryan Bradshaw <ryan@rbradshaw.dev>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = "^0.55.1"
+fastapi = "^0.58.0"
 uvicorn = "^0.11.5"
 gunicorn = "^20.0.4"
 asyncpg = "^0.20.1"
@@ -21,7 +21,7 @@ flake8 = "^3.8.3"
 isort = "^4.3.21"
 pytest = "^5.4.3"
 pytest-cov = "^2.10.0"
-requests = "^2.23.0"
+requests = "^2.24.0"
 asynctest = "^0.13.0"
 
 [tool.coverage.run]

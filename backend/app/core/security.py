@@ -21,11 +21,11 @@ def create_access_token(data: dict, expiry: int, key: str, algorithm: str) -> by
 
 
 async def authenticate_user(username: str, password: str = None) -> User:
-    user = await User.filter(email=username).first()
+    user = await User.filter(username=username).first()
     if not user or (password and not user.verify_password(password)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Basic"},
         )
     return user

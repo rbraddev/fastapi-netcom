@@ -19,5 +19,5 @@ async def get_access_token(
         settings.token_algorithm,
     )
     user = await authenticate_user(credentials.username, credentials.password)
-    access_token = create_access_token(data={"sub": user.email}, expiry=expiry, key=key, algorithm=algorithm)
+    access_token = create_access_token(data={"sub": user.username}, expiry=expiry, key=key, algorithm=algorithm)
     return {"access_token": access_token, "token_type": "bearer"}
