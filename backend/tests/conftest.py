@@ -2,7 +2,7 @@ import os
 
 import pytest
 from starlette.testclient import TestClient
-from tortoise.contrib.test import initializer, finalizer
+from tortoise.contrib.test import finalizer, initializer
 
 from app.config import Settings, get_settings
 from app.main import create_application
