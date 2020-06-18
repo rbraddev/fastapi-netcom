@@ -1,0 +1,9 @@
+venv
+.idea
+.vscode
+.dockerignore
+Dockerfile
+Dockerfile.prod
+.coverage
+htmlcov
+.pytest_cache
