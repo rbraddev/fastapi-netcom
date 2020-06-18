@@ -24,10 +24,7 @@ def test_app():
 def test_app_with_db():
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
-    initializer(
-        db_url=os.environ.get("DATABASE_TEST_URL"),
-        modules=["app.models.tortoise.users"]
-    )
+    initializer(db_url=os.environ.get("DATABASE_TEST_URL"), modules=["app.models.tortoise.users"])
 
     with TestClient(app) as test_client:
         yield test_client

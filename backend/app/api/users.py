@@ -20,7 +20,7 @@ async def create_user(payload: UserPayloadSchema) -> UserResponseSchema:
         "email": payload.email,
         "username": payload.username,
         "full_name": payload.full_name,
-        "role": "user"
+        "role": "user",
     }
     return response_object
 

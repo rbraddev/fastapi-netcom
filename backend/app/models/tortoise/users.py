@@ -27,11 +27,7 @@ class User(models.Model):
         return self._get_password_context().verify(password, self.hashed_password)
 
     def set_access_level(self, role):
-        access_level = {
-            "admin": 3,
-            "tech": 2,
-            "user": 1
-        }
+        access_level = {"admin": 3, "tech": 2, "user": 1}
         if role not in access_level.keys():
             raise ValueError(f"{role} is and invalid role.")
         self.role = role

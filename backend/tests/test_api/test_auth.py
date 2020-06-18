@@ -6,17 +6,9 @@ import pytest
 @pytest.mark.parametrize(
     "credentials, status_code, detail",
     [
-        [
-            {"username": "foo", "password": "password123"},
-            401,
-            "Incorrect username or password",
-        ],
-        [
-            {"username": "foo_bar", "password": "password"},
-            401,
-            "Incorrect username or password",
-        ],
-    ]
+        [{"username": "foo", "password": "password123"}, 401, "Incorrect username or password",],
+        [{"username": "foo_bar", "password": "password"}, 401, "Incorrect username or password",],
+    ],
 )
 def test_get_token_with_invalid_credentials(test_app_with_db, credentials, status_code, detail):
     test_app_with_db.post(
