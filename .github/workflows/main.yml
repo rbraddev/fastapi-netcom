@@ -30,12 +30,12 @@ jobs:
             --target builder \
             --cache-from ${{ env.IMAGE }}-builder:latest \
             --tag ${{ env.IMAGE }}-builder:latest \
-            --file ./project/Dockerfile.prod \
+            --file ./backend/Dockerfile.prod \
             "./project"
           docker build \
             --cache-from ${{ env.IMAGE }}-final:latest \
             --tag ${{ env.IMAGE }}-final:latest \
-            --file ./project/Dockerfile.prod \
+            --file ./backend/Dockerfile.prod \
             "./project"
       - name: Push images
         run: |
@@ -63,12 +63,12 @@ jobs:
             --target builder \
             --cache-from ${{ env.IMAGE }}-builder:latest \
             --tag ${{ env.IMAGE }}-builder:latest \
-            --file ./project/Dockerfile.prod \
+            --file ./backend/Dockerfile.prod \
             "./project"
           docker build \
             --cache-from ${{ env.IMAGE }}-final:latest \
             --tag ${{ env.IMAGE }}-final:latest \
-            --file ./project/Dockerfile.prod \
+            --file ./backend/Dockerfile.prod \
             "./project"
       - name: Run container
         run: |
@@ -81,7 +81,7 @@ jobs:
             -p 5003:8765 \
             ${{ env.IMAGE }}-final:latest
       - name: Install requirements
-        run: docker exec fastapi-netcom poetry install --no-root
+        run: docker exec pip install pytest flake8 black isort
       - name: Pytest
         run: docker exec fastapi-netcom python -m pytest .
       - name: Flake8
