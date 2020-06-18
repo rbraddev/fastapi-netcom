@@ -81,7 +81,7 @@ jobs:
             -p 5003:8765 \
             ${{ env.IMAGE }}-final:latest
       - name: Install requirements
-        run: docker exec fastapi-netcom pip install pytest flake8 black isort requests
+        run: docker exec fastapi-netcom pip install pytest flake8 black isort requests asynctest
       - name: Pytest
         run: docker exec fastapi-netcom python -m pytest .
       - name: Flake8
