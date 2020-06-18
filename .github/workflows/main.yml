@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  IMAGE: docker.pkg.github.com/$GITHUB_REPOSITORY/web
+  IMAGE: docker.pkg.github.com/$GITHUB_REPOSITORY/netcom-web
 
 jobs:
 
