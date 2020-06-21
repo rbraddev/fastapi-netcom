@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 
@@ -13,9 +11,7 @@ import pytest
 def test_get_token_with_invalid_credentials(test_app_with_db, credentials, status_code, detail):
     test_app_with_db.post(
         "/users/",
-        data=json.dumps(
-            {"email": "foo@bar.com", "username": "foo_bar", "full_name": "foo bar", "password": "password123"}
-        ),
+        json={"email": "foo@bar.com", "username": "foo_bar", "full_name": "foo bar", "password": "password123"},
     )
 
     response = test_app_with_db.post("/auth/token", auth=(credentials["username"], credentials["password"]))
@@ -27,9 +23,7 @@ def test_get_token_with_invalid_credentials(test_app_with_db, credentials, statu
 def test_get_token_with_valid_credentials(test_app_with_db):
     test_app_with_db.post(
         "/users/",
-        data=json.dumps(
-            {"email": "foo@bar.com", "username": "foo_bar", "full_name": "foo bar", "password": "password123"}
-        ),
+        json={"email": "foo@bar.com", "username": "foo_bar", "full_name": "foo bar", "password": "password123"},
     )
 
     response = test_app_with_db.post("/auth/token", auth=("foo_bar", "password123"))

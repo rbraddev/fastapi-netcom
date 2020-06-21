@@ -27,4 +27,5 @@ async def create_user(payload: UserPayloadSchema) -> UserResponseSchema:
 
 @router.get("/", response_model=List[UserResponseSchema])
 async def get_all_users(user: User = Depends(get_current_user),) -> List[UserResponseSchema]:
+    # async def get_all_users() -> List[UserResponseSchema]:
     return await crud.get_all()
