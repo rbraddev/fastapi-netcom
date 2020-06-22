@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.core.security import get_current_user
 from app.crud import users as crud
-from app.models.pydantic.users import UserPayloadSchema, UserResponseSchema
+from app.models.pydantic.users import CreateUserPayloadSchema, UserResponseSchema, GetUserSchema
 from app.models.tortoise.users import User
 
 
@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.post("/", response_model=UserResponseSchema, status_code=201)
-async def create_user(payload: UserPayloadSchema) -> UserResponseSchema:
+async def create_user(payload: CreateUserPayloadSchema) -> UserResponseSchema:
     user_id = await crud.post(payload)
 
     response_object = {
@@ -26,6 +26,20 @@ async def create_user(payload: UserPayloadSchema) -> UserResponseSchema:
 
 
 @router.get("/", response_model=List[UserResponseSchema])
-async def get_all_users(user: User = Depends(get_current_user),) -> List[UserResponseSchema]:
-    # async def get_all_users() -> List[UserResponseSchema]:
+async def get_all_users(user: User = Depends(get_current_user)) -> List[UserResponseSchema]:
     return await crud.get_all()
+
+
+@router.get("/me/", response_model=UserResponseSchema)
+async def get_me(user: User = Depends(get_current_user)) -> UserResponseSchema:
+    me = await crud.get(GetUserSchema(id=user.id))
+
+    response_object = {
+        "id": me.id,
+        "email": me.email,
+        "username": me.username,
+        "full_name": me.full_name,
+        "role": me.role,
+    }
+
+    return response_object

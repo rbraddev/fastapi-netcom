@@ -57,3 +57,14 @@ def test_get_all_users(test_app_with_db, access_token):
 
     response_list = response.json()
     assert len(list(filter(lambda user: user["id"] == user_id, response_list))) == 1
+
+
+def test_get_me(test_app_with_db, access_token):
+    test_app_with_db.post(
+        "/users/",
+        json={"email": "getall@bar.com", "username": "get_all_bar", "full_name": "foo bar", "password": "password123"},
+    )
+
+    response = test_app_with_db.get("/users/me/", headers={"Authorization": f"Bearer {access_token}"})
+
+    assert response.status_code == 200
