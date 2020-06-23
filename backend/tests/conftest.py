@@ -36,7 +36,10 @@ def test_app_with_db():
 
 
 @pytest.fixture(scope="module")
-def access_token(test_app_with_db):
-    return create_access_token(data={"sub": "foo_bar"}, expiry=15, key=AUTH_SECRET_KEY, algorithm="HS256").decode(
-        "utf-8"
-    )
+def get_access_token(test_app_with_db):
+    def _create_access_token(username: str):
+        return create_access_token(data={"sub": username}, expiry=15, key=AUTH_SECRET_KEY, algorithm="HS256").decode(
+            "utf-8"
+        )
+
+    return _create_access_token

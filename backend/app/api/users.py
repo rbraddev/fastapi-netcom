@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.core.security import get_current_user
 from app.crud import users as crud
-from app.models.pydantic.users import CreateUserPayloadSchema, UserResponseSchema, GetUserSchema
+from app.models.pydantic.users import CreateUserPayloadSchema, UserResponseSchema
 from app.models.tortoise.users import User
 
 
@@ -32,7 +32,7 @@ async def get_all_users(user: User = Depends(get_current_user)) -> List[UserResp
 
 @router.get("/me/", response_model=UserResponseSchema)
 async def get_me(user: User = Depends(get_current_user)) -> UserResponseSchema:
-    me = await crud.get(GetUserSchema(id=user.id))
+    me = await crud.get(username=user.username)
 
     response_object = {
         "id": me.id,
@@ -40,6 +40,21 @@ async def get_me(user: User = Depends(get_current_user)) -> UserResponseSchema:
         "username": me.username,
         "full_name": me.full_name,
         "role": me.role,
+    }
+
+    return response_object
+
+
+@router.get("/{username}/", response_model=UserResponseSchema)
+async def get(username: str, user: User = Depends(get_current_user)) -> UserResponseSchema:
+    user = await crud.get(username=username)
+
+    response_object = {
+        "id": user.id,
+        "email": user.email,
+        "username": user.username,
+        "full_name": user.full_name,
+        "role": user.role,
     }
 
     return response_object
