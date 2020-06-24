@@ -21,12 +21,7 @@ def test_get_token_with_invalid_credentials(test_app_with_db, credentials, statu
 
 
 def test_get_token_with_valid_credentials(test_app_with_db):
-    test_app_with_db.post(
-        "/users/",
-        json={"email": "foo@bar.com", "username": "foo_bar", "full_name": "foo bar", "password": "password123"},
-    )
-
-    response = test_app_with_db.post("/auth/token", auth=("foo_bar", "password123"))
+    response = test_app_with_db.post("/auth/token", auth=("user", "pass123"))
 
     assert response.status_code == 200
     assert "access_token" in response.json().keys()
