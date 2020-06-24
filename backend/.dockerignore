@@ -6,4 +6,5 @@ Dockerfile
 Dockerfile.prod
 .coverage
 htmlcov
+cov.html
 .pytest_cache

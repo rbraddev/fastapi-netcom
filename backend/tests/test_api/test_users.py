@@ -12,8 +12,7 @@ def test_create_user(test_app_with_db):
 
 def test_create_duplicate_user(test_app_with_db):
     response = test_app_with_db.post(
-        "/users/",
-        json={"email": "user@test.com", "username": "user", "full_name": "user user", "password": "pass123"},
+        "/users/", json={"email": "user@test.com", "username": "user", "full_name": "user user", "password": "pass123"},
     )
 
     assert response.status_code == 400
@@ -51,14 +50,20 @@ def test_get_me(test_app_with_db, get_access_token):
 
 
 def test_get(test_app_with_db, get_access_token):
-    response = test_app_with_db.post(
-        "/users/",
-        json={"email": "foo@bar.com", "username": "get_username", "full_name": "foo bar", "password": "password123"},
-    )
-    username = response.json()["username"]
+    username = "user"
     access_token = get_access_token(username)
 
     response = test_app_with_db.get(f"/users/{username}/", headers={"Authorization": f"Bearer {access_token}"})
 
     assert response.status_code == 200
     assert response.json()["username"] == username
+
+
+def test_get_invalid_user(test_app_with_db, get_access_token):
+    username = "nouser"
+    access_token = get_access_token(username)
+
+    response = test_app_with_db.get(f"/users/{username}/", headers={"Authorization": f"Bearer {access_token}"})
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Incorrect username or password"

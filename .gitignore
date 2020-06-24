@@ -2,6 +2,7 @@ __pycache__
 venv
 .coverage
 htmlcov
+cov.html
 .pytest_cache
 .idea
 .vscode
