@@ -51,8 +51,22 @@ def get_access_token(test_app_with_db):
 async def add_users():
     user_list = [
         {"username": "user", "email": "user@test.com", "full_name": "user user", "password": "pass123"},
-        {"username": "tech", "email": "tech@test.com", "full_name": "tech user", "password": "pass123", "role": "tech", "access_level": 2},
-        {"username": "admin", "email": "admin@test.com", "full_name": "admin_user", "password": "pass123", "role": "admin", "access_level": 3}
+        {
+            "username": "tech",
+            "email": "tech@test.com",
+            "full_name": "tech user",
+            "password": "pass123",
+            "role": "tech",
+            "access_level": 2,
+        },
+        {
+            "username": "admin",
+            "email": "admin@test.com",
+            "full_name": "admin_user",
+            "password": "pass123",
+            "role": "admin",
+            "access_level": 3,
+        },
     ]
     for user in user_list:
         u = User(**user)

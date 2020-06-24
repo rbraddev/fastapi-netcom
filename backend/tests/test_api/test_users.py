@@ -13,12 +13,7 @@ def test_create_user(test_app_with_db):
 def test_create_duplicate_user(test_app_with_db):
     response = test_app_with_db.post(
         "/users/",
-        json={
-            "email": "user@test.com",
-            "username": "user",
-            "full_name": "user user",
-            "password": "pass123",
-        },
+        json={"email": "user@test.com", "username": "user", "full_name": "user user", "password": "pass123"},
     )
 
     assert response.status_code == 400

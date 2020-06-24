@@ -1,6 +1,6 @@
 import pytest
 
-from app.core.security import create_access_token, authenticate_user
+from app.core.security import create_access_token
 
 
 def test_create_access_token():
