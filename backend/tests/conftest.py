@@ -52,9 +52,9 @@ def event_loop(test_app_with_db: TestClient) -> Generator:
 @pytest.fixture
 def get_access_token(test_app_with_db) -> str:
     def _create_access_token(username: str, expiry: int = 15):
-        return create_access_token(data={"sub": username}, expiry=expiry, key=AUTH_SECRET_KEY, algorithm="HS256").decode(
-            "utf-8"
-        )
+        return create_access_token(
+            data={"sub": username}, expiry=expiry, key=AUTH_SECRET_KEY, algorithm="HS256"
+        ).decode("utf-8")
 
     return _create_access_token
 
