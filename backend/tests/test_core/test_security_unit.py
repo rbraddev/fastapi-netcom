@@ -14,38 +14,44 @@ def test_create_access_token():
     assert isinstance(token, bytes)
 
 
-def test_authenticate_user_valid_with_pass(event_loop: asyncio.AbstractEventLoop):
-    user = event_loop.run_until_complete(authenticate_user("user", "pass123"))
+@pytest.mark.asyncio
+async def test_authenticate_user_valid_with_pass():
+    user = await authenticate_user("user", "pass123")
 
     assert isinstance(user, User)
     assert user.username == "user"
 
 
-def test_authenticate_user_valid_without_pass(event_loop: asyncio.AbstractEventLoop):
+@pytest.mark.asyncio
+async def test_authenticate_user_valid_without_pass():
     with pytest.raises(HTTPException):
-         event_loop.run_until_complete(authenticate_user("user"))
+        await authenticate_user("user")
 
 
-def test_authenticate_user_invalid(event_loop: asyncio.AbstractEventLoop):
+@pytest.mark.asyncio
+async def test_authenticate_user_invalid():
     with pytest.raises(HTTPException):
-        event_loop.run_until_complete(authenticate_user("user", "letmein"))
+        await authenticate_user("user", "letmein")
 
 
-def test_get_current_user_valid(event_loop_no_oauth2: asyncio.AbstractEventLoop, get_access_token):
+@pytest.mark.asyncio
+async def test_get_current_user_valid(get_access_token):
     access_token = get_access_token("user")
-    user = event_loop_no_oauth2.run_until_complete(get_current_user(access_token, get_settings_override()))
+    user = await get_current_user(access_token, get_settings_override())
 
     assert isinstance(user, User)
 
 
 @pytest.mark.parametrize("user", ["", "nouser"])
-def test_get_current_user_invalid_user(event_loop_no_oauth2: asyncio.AbstractEventLoop, get_access_token, user):
+@pytest.mark.asyncio
+async def test_get_current_user_invalid_user(get_access_token, user):
     access_token = get_access_token(user)
     with pytest.raises(HTTPException):
-        user = event_loop_no_oauth2.run_until_complete(get_current_user(access_token, get_settings_override()))
+        await get_current_user(access_token, get_settings_override())
 
 
-def test_get_current_user_invalid_token(event_loop_no_oauth2: asyncio.AbstractEventLoop):
+@pytest.mark.asyncio
+async def test_get_current_user_invalid_token():
     access_token = "this_is_not_a_valid_token"
     with pytest.raises(HTTPException):
-        event_loop_no_oauth2.run_until_complete(get_current_user(access_token, get_settings_override()))
+        await get_current_user(access_token, get_settings_override())

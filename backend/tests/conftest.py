@@ -49,11 +49,6 @@ def event_loop(test_app_with_db: TestClient) -> Generator:
     yield test_app_with_db.task.get_loop()
 
 
-@pytest.fixture(scope="module")
-def event_loop_no_oauth2(test_app_with_db: TestClient) -> Generator:
-    yield test_app_with_db.task.get_loop()
-
-
 @pytest.fixture
 def get_access_token(test_app_with_db) -> str:
     def _create_access_token(username: str):
