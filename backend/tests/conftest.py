@@ -7,7 +7,7 @@ from tortoise import run_async
 from tortoise.contrib.test import finalizer, initializer
 
 from app.config import Settings, get_settings
-from app.core.security import create_access_token
+from app.core.security.utils import create_access_token
 from app.main import create_application
 from app.models.tortoise.users import User
 
@@ -44,12 +44,12 @@ def test_app_with_db() -> Generator:
     finalizer()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def event_loop(test_app_with_db: TestClient) -> Generator:
     yield test_app_with_db.task.get_loop()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def event_loop_no_oauth2(test_app_with_db: TestClient) -> Generator:
     yield test_app_with_db.task.get_loop()
 

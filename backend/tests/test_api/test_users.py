@@ -64,4 +64,4 @@ def test_get_invalid_user(test_app_with_db, get_access_token):
     response = test_app_with_db.get(f"/users/{username}/", headers={"Authorization": f"Bearer {access_token}"})
 
     assert response.status_code == 401
-    assert response.json()["detail"] == "Incorrect username or password"
+    assert response.json()["detail"] == "Could not validate token"

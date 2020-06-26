@@ -6,6 +6,7 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 from app.config import get_settings, Settings
+from app.core.security.errors import credential_error
 from app.models.tortoise.users import User
 from app.models.pydantic.auth import TokenData
 
@@ -21,31 +22,24 @@ def create_access_token(data: dict, expiry: int, key: str, algorithm: str) -> by
 
 
 async def authenticate_user(username: str, password: str = None) -> User:
+    if None in [username, password]:
+        raise credential_error("Incorrect username or password", "Basic")
     user = await User.filter(username=username).first()
-    if not user or (password and not user.verify_password(password)):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Basic"},
-        )
+    if not user or not user.verify_password(password):
+        raise credential_error("Incorrect username or password", "Basic")
     return user
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), settings: Settings = Depends(get_settings)) -> User:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         payload = jwt.decode(token, settings.auth_secret_key, algorithms=[settings.token_algorithm])
         username: str = payload.get("sub")
         if username is None:
-            raise credentials_exception
+            raise credential_error("Could not validate token", "Bearer")
         token_data = TokenData(username=username)
     except PyJWTError:
-        raise credentials_exception
-    user = await authenticate_user(username=token_data.username)
+        raise credential_error("Could not validate token", "Bearer")
+    user = await User.filter(username=token_data.username).first()
     if user is None:
-        raise credentials_exception
+        raise credential_error("Could not validate token", "Bearer")
     return user

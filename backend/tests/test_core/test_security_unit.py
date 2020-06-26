@@ -3,7 +3,7 @@ import asyncio
 import pytest
 from fastapi import HTTPException
 
-from app.core.security import create_access_token, authenticate_user, get_current_user
+from app.core.security.utils import create_access_token, authenticate_user, get_current_user
 from app.models.tortoise.users import User
 from tests.conftest import get_settings_override
 
@@ -22,10 +22,8 @@ def test_authenticate_user_valid_with_pass(event_loop: asyncio.AbstractEventLoop
 
 
 def test_authenticate_user_valid_without_pass(event_loop: asyncio.AbstractEventLoop):
-    user = event_loop.run_until_complete(authenticate_user("user"))
-
-    assert isinstance(user, User)
-    assert user.username == "user"
+    with pytest.raises(HTTPException):
+         event_loop.run_until_complete(authenticate_user("user"))
 
 
 def test_authenticate_user_invalid(event_loop: asyncio.AbstractEventLoop):

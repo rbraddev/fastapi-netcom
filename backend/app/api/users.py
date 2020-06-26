@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.core.security import get_current_user
+from app.core.security.utils import get_current_user
 from app.crud import users as crud
 from app.models.pydantic.users import CreateUserPayloadSchema, GetUserSchema, UserResponseSchema
 from app.models.tortoise.users import User
