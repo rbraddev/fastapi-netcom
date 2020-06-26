@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import jwt
 from jwt import PyJWTError
-from fastapi import HTTPException, status, Depends
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
 from app.config import get_settings, Settings
