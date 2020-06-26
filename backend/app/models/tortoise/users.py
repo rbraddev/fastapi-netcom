@@ -1,5 +1,4 @@
 from tortoise import fields, models
-from tortoise.contrib.pydantic import pydantic_model_creator
 from passlib.context import CryptContext
 
 
@@ -32,6 +31,3 @@ class User(models.Model):
             raise ValueError(f"{role} is and invalid role.")
         self.role = role
         self.access_level = access_level.get("role")
-
-
-UserSchema = pydantic_model_creator(User)

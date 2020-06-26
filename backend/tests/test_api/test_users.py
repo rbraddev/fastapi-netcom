@@ -6,8 +6,6 @@ def test_create_user(test_app_with_db):
 
     assert response.status_code == 201
     assert response.json()["username"] == "new_user"
-    assert response.json()["email"] == "new_user@test.com"
-    assert response.json()["role"] == "user"
 
 
 def test_create_duplicate_user(test_app_with_db):

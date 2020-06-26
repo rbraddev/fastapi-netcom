@@ -23,7 +23,7 @@ def get_settings_override():
     )
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def test_app() -> Generator:
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
@@ -31,7 +31,7 @@ def test_app() -> Generator:
         yield test_client
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def test_app_with_db() -> Generator:
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
@@ -39,18 +39,17 @@ def test_app_with_db() -> Generator:
     run_async(add_users())
 
     with TestClient(app) as test_client:
-        # breakpoint()
         yield test_client
 
     finalizer()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def event_loop(test_app_with_db: TestClient) -> Generator:
     yield test_app_with_db.task.get_loop()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def event_loop_no_oauth2(test_app_with_db: TestClient) -> Generator:
     yield test_app_with_db.task.get_loop()
 

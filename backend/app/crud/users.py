@@ -1,15 +1,13 @@
-from typing import List
-
-from fastapi import HTTPException, status
+from typing import List, Union
 
 from app.models.pydantic.users import CreateUserPayloadSchema
 from app.models.tortoise.users import User
 
 
-async def post(payload: CreateUserPayloadSchema) -> int:
+async def post(payload: CreateUserPayloadSchema) -> Union[int, None]:
     user = await User.filter(username=payload.username).first()
     if user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
+        return None
     user = User(username=payload.username, email=payload.email, full_name=payload.full_name)
     user.set_password(payload.password)
     await user.save()
@@ -21,10 +19,9 @@ async def get_all() -> List[User]:
     return users
 
 
-async def get(username: str) -> User:
-    user = await User.filter(username=username).first()
+async def get(username: str) -> Union[User, None]:
+    user = await User.filter(username=username).first().values()
 
     if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
-
+        return None
     return user
