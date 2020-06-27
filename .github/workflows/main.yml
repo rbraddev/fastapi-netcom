@@ -86,7 +86,7 @@ jobs:
       - name: Pytest
         run: docker exec fastapi-netcom python -m pytest . --cov=./
       - name: Upload coverage report
-        run: docker exec fastaoi-netcom /bin/bash <(curl -s https://codecov.io/bash)
+        run: docker exec fastapi-netcom /bin/bash <(curl -s https://codecov.io/bash)
       - name: Flake8
         run: docker exec fastapi-netcom python -m flake8 .
       - name: Black
