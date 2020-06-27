@@ -53,6 +53,7 @@ jobs:
         run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Pull images
         run: |
           docker pull ${{ env.IMAGE }}-builder:latest || true
@@ -83,7 +84,9 @@ jobs:
       - name: Install requirements
         run: docker exec fastapi-netcom pip install pytest flake8 black isort requests asynctest
       - name: Pytest
-        run: docker exec fastapi-netcom python -m pytest .
+        run: docker exec fastapi-netcom python -m pytest . --cov=./
+      - name: Upload coverage report
+        run: docker exec fastaoi-netcom /bin/bash <(curl -s https://codecov.io/bash)
       - name: Flake8
         run: docker exec fastapi-netcom python -m flake8 .
       - name: Black
