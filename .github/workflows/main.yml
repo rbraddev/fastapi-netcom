@@ -91,7 +91,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-            file: ./coverage.xml
+          file: ./coverage.xml
       - name: Flake8
         run: docker exec fastapi-netcom python -m flake8 .
       - name: Black
