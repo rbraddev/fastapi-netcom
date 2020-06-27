@@ -5,6 +5,7 @@ venv
 Dockerfile
 Dockerfile.prod
 .coverage
+coverage.xml
 htmlcov
 cov.html
 .pytest_cache
