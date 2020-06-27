@@ -31,8 +31,6 @@ async def get_all_users(user: User = Depends(get_current_user)) -> List[UserResp
 @router.get("/me/", response_model=UserResponseSchema)
 async def get_me(user: User = Depends(get_current_user)) -> UserResponseSchema:
     me = await crud.get(username=user.username)
-    if not me:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
     return me[0]
 
 
