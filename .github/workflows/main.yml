@@ -88,9 +88,9 @@ jobs:
       - name: Get coverage report
         run: docker exec fastapi-netcom cat coverage.xml > coverage.xml
       - name: Upload coverage report
-          uses: codecov/codecov-action@v1
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
             file: ./coverage.xml
       - name: Flake8
         run: docker exec fastapi-netcom python -m flake8 .
