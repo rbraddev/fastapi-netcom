@@ -85,7 +85,7 @@ jobs:
       - name: Pytest
         run: docker exec fastapi-netcom python -m pytest . --cov=./
       - name: Upload coverage report
-      - uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Flake8
