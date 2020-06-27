@@ -81,13 +81,14 @@ jobs:
             -p 5003:8765 \
             ${{ env.IMAGE }}-final:latest
       - name: Install requirements
-        run: docker exec fastapi-netcom pip install pytest pytest-cov flake8 black isort requests asynctest
+        run: docker exec fastapi-netcom pip install pytest pytest-cov pytest-asyncio flake8 black isort requests asynctest
       - name: Pytest
         run: docker exec fastapi-netcom python -m pytest . --cov=./ --cov-report=xml
       - name: Upload coverage report
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
       - name: Flake8
         run: docker exec fastapi-netcom python -m flake8 .
       - name: Black
