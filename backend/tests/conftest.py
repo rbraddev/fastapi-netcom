@@ -1,4 +1,5 @@
 import os
+import asyncio
 from typing import Generator
 
 import pytest
@@ -32,7 +33,14 @@ def test_app() -> Generator:
 
 
 @pytest.fixture(scope="session")
-def test_app_with_db() -> Generator:
+def event_loop():
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture(scope="session")
+def test_app_with_db(event_loop) -> Generator:
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
     initializer(db_url=os.environ.get("DATABASE_TEST_URL"), modules=["app.models.tortoise.users"])
@@ -43,15 +51,14 @@ def test_app_with_db() -> Generator:
 
     finalizer()
 
-
-@pytest.fixture(scope="module")
-def event_loop(test_app_with_db: TestClient) -> Generator:
-    yield test_app_with_db.task.get_loop()
+# @pytest.fixture(scope="module")
+# def event_loop(test_app_with_db: TestClient) -> Generator:
+#     yield test_app_with_db.task.get_loop()
 
 
 @pytest.fixture
-def get_access_token(test_app_with_db) -> str:
-    def _create_access_token(username: str, expiry: int = 15):
+def get_access_token(test_app_with_db):
+    def _create_access_token(username: str, expiry: int = 15) -> str:
         return create_access_token(
             data={"sub": username}, expiry=expiry, key=AUTH_SECRET_KEY, algorithm="HS256"
         ).decode("utf-8")
