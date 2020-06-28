@@ -52,7 +52,7 @@ async def get_current_user(
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
-        authenticate_value = f"Bearer"
+        authenticate_value = "Bearer"
     try:
         payload = jwt.decode(token, settings.auth_secret_key, algorithms=[settings.token_algorithm])
         username: str = payload.get("sub")
