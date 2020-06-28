@@ -1,16 +1,32 @@
 from datetime import datetime, timedelta
+import logging
 
 import jwt
 from jwt import PyJWTError
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+from pydantic import ValidationError
 
 from app.config import get_settings, Settings
 from app.core.security.errors import credential_error
 from app.models.tortoise.users import User
 from app.models.pydantic.auth import TokenData
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+log = logging.getLogger(__name__)
+
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/auth/token",
+    scopes={
+        "me": "Read information about the current user.",
+        "user:read": "Read access on user level resources",
+        "user:write": "Write access on user level resources",
+        "user:run": "Run access on user level resources",
+        "tech:read": "Read access on tech level resources",
+        "tech:write": "Write access on tech level resources",
+        "tech:run": "Run access on tech level resources",
+        "admin": "Superuser",
+    },
+)
 
 
 def create_access_token(data: dict, expiry: int, key: str, algorithm: str) -> bytes:
@@ -30,16 +46,26 @@ async def authenticate_user(username: str, password: str = None) -> User:
     return user
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), settings: Settings = Depends(get_settings)) -> User:
+async def get_current_user(
+    security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme), settings: Settings = Depends(get_settings)
+) -> User:
+    if security_scopes.scopes:
+        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+    else:
+        authenticate_value = f"Bearer"
     try:
         payload = jwt.decode(token, settings.auth_secret_key, algorithms=[settings.token_algorithm])
         username: str = payload.get("sub")
         if username is None:
-            raise credential_error("Could not validate token", "Bearer")
-        token_data = TokenData(username=username)
-    except PyJWTError:
-        raise credential_error("Could not validate token", "Bearer")
+            raise credential_error("Could not validate token", authenticate_value)
+        token_scopes = payload.get("scopes", [])
+        token_data = TokenData(scopes=token_scopes, username=username)
+    except (PyJWTError, ValidationError):
+        raise credential_error("Could not validate token", authenticate_value)
     user = await User.filter(username=token_data.username).first()
     if user is None:
-        raise credential_error("Could not validate token", "Bearer")
+        raise credential_error("Could not validate token", authenticate_value)
+    for scope in security_scopes.scopes:
+        if scope not in token_data.scopes:
+            raise credential_error("Not enough permissions", authenticate_value)
     return user

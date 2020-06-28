@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 
 
@@ -8,3 +10,4 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str
+    scopes: List[str] = []

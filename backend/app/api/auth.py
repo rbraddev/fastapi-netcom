@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
@@ -7,6 +9,8 @@ from app.models.pydantic.auth import Token
 
 router = APIRouter()
 httpbasic = HTTPBasic()
+
+log = logging.getLogger(__name__)
 
 
 @router.post("/token", response_model=Token)
@@ -19,5 +23,11 @@ async def get_access_token(
         settings.token_algorithm,
     )
     user = await authenticate_user(credentials.username, credentials.password)
-    access_token = create_access_token(data={"sub": user.username}, expiry=expiry, key=key, algorithm=algorithm)
+    log.info(f"user scopes: {user.scopes}")
+    access_token = create_access_token(
+        data={"sub": user.username, "scopes": [scope for scope in user.scopes.split(",")]},
+        expiry=expiry,
+        key=key,
+        algorithm=algorithm,
+    )
     return {"access_token": access_token, "token_type": "bearer"}

@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Security
 
 from app.core.security.utils import get_current_user
 from app.crud import users as crud
@@ -29,7 +29,7 @@ async def get_all_users(user: User = Depends(get_current_user)) -> List[UserResp
 
 
 @router.get("/me/", response_model=UserResponseSchema)
-async def get_me(user: User = Depends(get_current_user)) -> UserResponseSchema:
+async def get_me(user: User = Security(get_current_user, scopes=["me"])) -> UserResponseSchema:
     me = await crud.get(username=user.username)
     return me[0]
 
