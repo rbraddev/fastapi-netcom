@@ -8,7 +8,7 @@ class User(models.Model):
     full_name = fields.TextField()
     hashed_password = fields.TextField()
     role = fields.TextField(default="user")
-    scopes = fields.TextField(default="me,user:read")
+    scopes = fields.TextField(default="user:read")
     # access_level = fields.IntField(default=1)
     created_at = fields.DatetimeField(auto_now_add=True)
     disabled = fields.BooleanField(default=True)

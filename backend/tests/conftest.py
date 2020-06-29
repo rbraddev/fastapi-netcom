@@ -1,5 +1,5 @@
 import os
-from typing import Generator
+from typing import Generator, List
 
 import pytest
 from starlette.testclient import TestClient
@@ -51,9 +51,9 @@ def event_loop(test_app_with_db: TestClient) -> Generator:
 
 @pytest.fixture
 def get_access_token(test_app_with_db) -> str:
-    def _create_access_token(username: str, expiry: int = 15):
+    def _create_access_token(username: str, expiry: int = 15, scopes: List[str] = []):
         return create_access_token(
-            data={"sub": username}, expiry=expiry, key=AUTH_SECRET_KEY, algorithm="HS256"
+            data={"sub": username, "scopes": scopes}, expiry=expiry, key=AUTH_SECRET_KEY, algorithm="HS256"
         ).decode("utf-8")
 
     return _create_access_token
@@ -68,7 +68,7 @@ async def add_users() -> None:
             "full_name": "tech user",
             "password": "pass123",
             "role": "tech",
-            "access_level": 2,
+            "scopes": "tech:run"
         },
         {
             "username": "admin",
@@ -76,7 +76,7 @@ async def add_users() -> None:
             "full_name": "admin_user",
             "password": "pass123",
             "role": "admin",
-            "access_level": 3,
+            "scopes": "admin"
         },
     ]
     for user in user_list:

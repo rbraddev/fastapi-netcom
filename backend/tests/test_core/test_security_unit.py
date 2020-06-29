@@ -1,5 +1,6 @@
 import pytest
 from fastapi import HTTPException
+from fastapi.security import SecurityScopes
 
 from app.core.security.utils import create_access_token, authenticate_user, get_current_user
 from app.models.tortoise.users import User
@@ -34,8 +35,15 @@ async def test_authenticate_user_invalid():
 
 @pytest.mark.asyncio
 async def test_get_current_user_valid(get_access_token):
-    access_token = get_access_token("user")
-    user = await get_current_user(access_token, get_settings_override())
+    access_token = get_access_token("user", scopes=["user:test"])
+
+    class MockScopes:
+        scopes = ["user:test"]
+
+        def scope_str(self):
+            return str(self.scopes)
+
+    user = await get_current_user(MockScopes, access_token, get_settings_override())
 
     assert isinstance(user, User)
 
