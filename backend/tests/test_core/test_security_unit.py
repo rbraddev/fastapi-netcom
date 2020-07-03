@@ -1,10 +1,17 @@
 import pytest
 from fastapi import HTTPException
-from fastapi.security import SecurityScopes
 
 from app.core.security.utils import create_access_token, authenticate_user, get_current_user
 from app.models.tortoise.users import User
 from tests.conftest import get_settings_override
+
+
+class MockScopes:
+    def __init__(self, scopes):
+        self.scopes = scopes
+
+    def scope_str(self):
+        return str(self.scopes)
 
 
 def test_create_access_token():
@@ -35,15 +42,8 @@ async def test_authenticate_user_invalid():
 
 @pytest.mark.asyncio
 async def test_get_current_user_valid(get_access_token):
-    access_token = get_access_token("user", scopes=["user:test"])
-
-    class MockScopes:
-        scopes = ["user:test"]
-
-        def scope_str(self):
-            return str(self.scopes)
-
-    user = await get_current_user(MockScopes, access_token, get_settings_override())
+    access_token = get_access_token("user")
+    user = await get_current_user(MockScopes(scopes=[]), access_token, get_settings_override())
 
     assert isinstance(user, User)
 
@@ -51,13 +51,15 @@ async def test_get_current_user_valid(get_access_token):
 @pytest.mark.parametrize("user", ["", "nouser"])
 @pytest.mark.asyncio
 async def test_get_current_user_invalid_user(get_access_token, user):
-    access_token = get_access_token(user)
+    access_token = get_access_token(username=user)
+
     with pytest.raises(HTTPException):
-        await get_current_user(access_token, get_settings_override())
+        await get_current_user(MockScopes(scopes=[]), access_token, get_settings_override())
 
 
 @pytest.mark.asyncio
 async def test_get_current_user_invalid_token():
     access_token = "this_is_not_a_valid_token"
+
     with pytest.raises(HTTPException):
-        await get_current_user(access_token, get_settings_override())
+        await get_current_user(MockScopes(scopes=[]), access_token, get_settings_override())

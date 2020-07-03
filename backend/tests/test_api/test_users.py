@@ -1,3 +1,6 @@
+import pytest
+
+
 def test_create_user(test_app_with_db):
     response = test_app_with_db.post(
         "/users/",
@@ -14,7 +17,7 @@ def test_create_duplicate_user(test_app_with_db):
     )
 
     assert response.status_code == 400
-    assert response.json()["detail"] == "Username already exists"
+    assert response.json()["detail"] == "Username/email already exists"
 
 
 def test_create_user_with_incomplete_payload(test_app_with_db):
@@ -29,8 +32,16 @@ def test_create_user_with_incomplete_payload(test_app_with_db):
     }
 
 
-def test_get_all_users(test_app_with_db, get_access_token):
-    access_token = get_access_token("user")
+@pytest.mark.parametrize("user, scopes", [["user", ["user:read"]], ["tech", ["tech:run"]]])
+def test_get_all_users_unauthorised(test_app_with_db, get_access_token, user, scopes):
+    access_token = get_access_token(username=user, scopes=scopes)
+    response = test_app_with_db.get("/users/", headers={"Authorization": f"Bearer {access_token}"})
+
+    assert response.status_code == 401
+
+
+def test_get_all_users_authorised(test_app_with_db, get_access_token):
+    access_token = get_access_token(username="admin", scopes=["admin"])
     response = test_app_with_db.get("/users/", headers={"Authorization": f"Bearer {access_token}"})
     response_list = response.json()
 

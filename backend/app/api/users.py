@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status, Security
+from fastapi import APIRouter, HTTPException, status, Security
 
 from app.core.security.utils import get_current_user
 from app.core.security.errors import unauth_error
@@ -38,7 +38,7 @@ async def get_me(user: User = Security(get_current_user)) -> UserResponseSchema:
 @router.get("/{username}/", response_model=UserResponseSchema)
 async def get(username: str, user: User = Security(get_current_user, scopes=[])) -> UserResponseSchema:
     if user.username != username and "admin" not in user.scopes:
-        raise unauth_error("Not enough permissions", f'Bearer scope="admin"')
+        raise unauth_error("Not enough permissions", 'Bearer scope="admin"')
     user = await crud.get(username=username)
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
