@@ -68,7 +68,7 @@ async def add_users() -> None:
             "full_name": "tech user",
             "password": "pass123",
             "role": "tech",
-            "scopes": "tech:run"
+            "scopes": "tech:run",
         },
         {
             "username": "admin",
@@ -76,7 +76,7 @@ async def add_users() -> None:
             "full_name": "admin_user",
             "password": "pass123",
             "role": "admin",
-            "scopes": "admin"
+            "scopes": "admin",
         },
     ]
     for user in user_list:

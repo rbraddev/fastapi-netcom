@@ -21,3 +21,8 @@ class UserResponseSchema(User):
 class GetUserSchema(BaseModel):
     id: Optional[int] = None
     username: Optional[str] = None
+
+
+class PatchUserSchema(BaseModel):
+    email: Optional[EmailStr]
+    full_name: Optional[str]

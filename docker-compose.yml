@@ -12,6 +12,7 @@ services:
       - ENVIRONMENT=dev
       - TESTING=0
       - DATABASE_URL=postgres://postgres:postgres@netcom-db:5432/netcom_dev
+      - AUTH_SECRET_KEY=740e812e52f29efb13c903ec80951fa2616155ad8d80ce644537aee284398538
       - DATABASE_TEST_URL=postgres://postgres:postgres@netcom-db:5432/netcom_test
       - AUTH_TOKEN_EXPIRY_MINUTES=5
     depends_on:
