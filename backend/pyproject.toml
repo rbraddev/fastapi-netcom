@@ -15,6 +15,7 @@ passlib = {extras = ["bcrypt"], version = "^1.7.2"}
 pyjwt = "^1.7.1"
 pydantic = {extras = ["email"], version = "^1.5.1"}
 emails = "^0.6"
+jinja2 = "^2.11.2"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"

@@ -1,22 +1,24 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, status, Security
+from fastapi import APIRouter, HTTPException, status, Security, BackgroundTasks
 
 from app.core.security.utils import get_current_user
 from app.core.security.errors import unauth_error
 from app.crud import users as crud
 from app.models.pydantic.users import CreateUserPayloadSchema, GetUserSchema, UserResponseSchema, PatchUserSchema
 from app.models.tortoise.users import User
+from app.utils import new_user_email
 
 
 router = APIRouter()
 
 
 @router.post("/", response_model=GetUserSchema, status_code=201)
-async def create_user(payload: CreateUserPayloadSchema) -> GetUserSchema:
+async def create_user(background_tasks: BackgroundTasks, payload: CreateUserPayloadSchema) -> GetUserSchema:
     user_id = await crud.post(payload)
     if not user_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username/email already exists")
+    background_tasks.add_task(new_user_email, payload.email, payload.username, payload.full_name)
     response_object = {
         "id": user_id,
         "username": payload.username,
