@@ -7,3 +7,4 @@ cov.html
 .pytest_cache
 .idea
 .vscode
+my_settings.txt

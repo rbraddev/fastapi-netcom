@@ -15,6 +15,13 @@ services:
       - AUTH_SECRET_KEY=740e812e52f29efb13c903ec80951fa2616155ad8d80ce644537aee284398538
       - DATABASE_TEST_URL=postgres://postgres:postgres@netcom-db:5432/netcom_test
       - AUTH_TOKEN_EXPIRY_MINUTES=5
+      - SMTP_HOST=
+      - SMTP_PORT=
+      - SMTP_TLS=
+      - SMTP_USER=
+      - SMTP_PASSWORD=
+      - EMAILS_FROM_NAME=
+      - EMAILS_FROM_EMAIL=
     depends_on:
       - netcom-db
 
